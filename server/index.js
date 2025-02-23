@@ -26,17 +26,9 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const PORT = process.env.PORT || 5000;
 dbConnect();
 
-// INBUILT MIDDLEWARE
-// parse incoming request with json body and make it available to req.body
 app.use(express.json());
 
-//when we login,this request have cookie so to access/to make available this cookie we use it.
-// Parses cookies from incoming requests.
 app.use(cookieParser());
-
-// CORS is used to interact frontend and backend hosted at different port/domain.
-// When your frontend (React) makes an API request to the backend (Express) using Axios (or any other HTTP client),
-// this is considered a cross-origin request. The browser will block this request unless the backend explicitly allows it through CORS.
 
 const allowedOrigins = ["http://localhost:5173"];
 app.use(cors({
@@ -46,13 +38,11 @@ app.use(cors({
 }));
 
 
-// allow server to accept and manage files uploaded by client through HTML form or API request.
 app.use(fileUpload({
   useTempFiles:true,
   tempFileDir:'/tmp/'
 }));
 
-// connection with cloudinary:
 cloudinaryconnect();
   
 
@@ -121,25 +111,3 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
-
-
-
-// IMPORTANT POINTS:
-/*
-1. Client sends request to DNR(domain name resolution)which finds the exact address of server(as there are many servers, which further sends request to server and server responds according to it to client.
-2. NodeJS provides runtime environment(earlier we can only run in browser but now due to nodejs we can run javascript code through client side also).
-3. before nodemon: node index.js, after nodemon dev:"nodemon index.js" and npm run dev
-4. Middleware: validate,log,authentication,authorize the request before responds.
-5. There are 5 types of middlewares: a).Application-level middleware(jo banaye he)   b).Built-in(app.use(express.json())    c).Third Party middleware(app.use(cookieParser()))
-    d). router middleware(router.use())     e).error-handling middleware     f).Route-specific middleware(for industry)
-
-6. MongoDB: No SQL database,in which data stored in document or json like structure. wheereas in SQL data is stored in every new row.s
-7. DUe to easy integation,scalibility.
-8. In mongoDB compass, there can be several collection and each collection can have several documents.
-9. Backend application interact with the database through the mongoose.
-10. Mongoose is a ODM(object data modelling) library.
-11. Schema is the blueprint of the document.
-12. Model is a toolbox that uses schema to do CRUD operations in DB.
-13. MVC(mode view controller) pattern(in which our project flow is there) follows SOC(separation of concerns)
-*/ 
