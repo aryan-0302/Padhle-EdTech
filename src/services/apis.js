@@ -71,4 +71,13 @@ const studentEndpoints = {
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
 };
 
-export { categories, endpoints,contactusEndpoint,courseEndpoints,profileEndpoints,settingsEndpoints,catalogData,ratingsEndpoints,studentEndpoints};
+
+const activityEndpoints={
+  ACTIVITY_API:BASE_URL+"/activity/track",
+};
+
+const recommendEndpoint={
+  RECOMMENDED_COURSES:BASE_URL+"/recommend"
+}
+
+export { categories, endpoints,contactusEndpoint,courseEndpoints,profileEndpoints,settingsEndpoints,catalogData,ratingsEndpoints,studentEndpoints,activityEndpoints,recommendEndpoint};

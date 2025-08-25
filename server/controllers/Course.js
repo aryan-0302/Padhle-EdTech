@@ -8,7 +8,7 @@ import Section from "../models/Section.js"
 import SubSection from "../models/SubSection.js"
 import convertSecondsToDuration from "../utils/secToDuration.js";
 import CourseProgress from "../models/CourseProgress.js"
-
+import { storeProductInChroma } from "./Recommendations.js"
 
 // 1. createcourse
 const createCourse = async (req, res) => {
@@ -55,7 +55,6 @@ const createCourse = async (req, res) => {
                 message: "All Fields are Mandatory",
             });
         }
-
 
 
         // Check for instructor status
@@ -105,19 +104,20 @@ const createCourse = async (req, res) => {
         });
 		console.log("newcourse:",newCourse)
 		console.log("newcourse images;",newCourse.thumbnail)
-        // Add the new course to the instructor's user schema
-        await User.findByIdAndUpdate(
+		
+		await User.findByIdAndUpdate(
             { _id: instructorDetails._id },
             { $push: { courses: newCourse._id } },
             { new: true }
         );
 
-        // Update the category schema
         await Category.findByIdAndUpdate(
             { _id: category },
-            { $push: { courses: newCourse._id } }, // Ensure it's courses if the field name is correct
+            { $push: { courses: newCourse._id } }, 
             { new: true }
         );
+
+		await storeProductInChroma(newCourse);
 
         return res.status(200).json({
             success: true,
@@ -327,6 +327,52 @@ const editCourse = async (req, res) => {
 		})
 	  }
 }
+
+
+// const editCourse=async(req,res)=>{
+// 	try{const courId=req.body;
+// 	const updates=req.body;
+
+// 	const courseofid=await Course.findById(courId);
+
+// 	if(!courseofid){
+// 		console.log("course not found.");
+// 	}
+
+// 	if (req.files) {
+// 		console.log("thumbnail update")
+// 		const thumbnail = req.files.thumbnailImage
+// 		const thumbnailImage = await uploadImageToCloudinary(
+// 		  thumbnail,
+// 		  process.env.FOLDER_NAME
+// 		)
+// 		course.thumbnail = thumbnailImage.secure_url
+// 	  }
+	
+//       const updatedCoursei = await Course.findByIdAndUpdate(courId, updates, {
+// 		new: true,
+// 	  });
+
+
+// 	  if (!updatedCoursei) {
+// 		return res.status(404).json({ success: false, message: "Course not found" });
+// 	  }
+
+// 	  return res.status(200).json({
+// 		success: true,
+// 		data: updatedCoursei,
+// 	 });}
+
+// 	 catch(error){
+// 		console.log(error);
+// 		res.status(500).json({
+// 			success: false,
+// 			message: "Failed to fetch courses",
+// 			error: error.message,
+// 		});
+// 	 }
+
+// }
 
 
 

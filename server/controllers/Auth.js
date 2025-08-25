@@ -35,7 +35,6 @@ const sendotp = async (req, res) => {
       });
       console.log("OTP generated:", otp);
   
-      // Check for unique OTP
       let result = await OTP.findOne({ otp });
       console.log("Result is Generate OTP Func");
       console.log("OTP", otp);
