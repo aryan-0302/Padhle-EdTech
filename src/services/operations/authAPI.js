@@ -15,6 +15,15 @@ const {
   RESETPASSWORD_API,
 } = endpoints
 
+
+
+
+
+
+
+
+
+
 export function sendOtp(email, navigate) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...");
@@ -41,6 +50,13 @@ export function sendOtp(email, navigate) {
     toast.dismiss(toastId);
   };
 }
+
+
+
+
+
+
+
 
 
 export function signUp(
@@ -86,6 +102,14 @@ export function signUp(
   }
 }
 
+
+
+
+
+
+
+
+
 export function login(email, password, navigate) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
@@ -125,6 +149,15 @@ export function login(email, password, navigate) {
   }
 }
 
+
+
+
+
+
+
+
+
+
 export function getPasswordResetToken(email, setEmailSent) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...")
@@ -150,6 +183,11 @@ export function getPasswordResetToken(email, setEmailSent) {
     dispatch(setLoading(false))
   }
 }
+
+
+
+
+
 
 export function resetPassword(password, confirmPassword, token, setresetComplete) {
     return async (dispatch) => {

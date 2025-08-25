@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-// Ensure dotenv is loaded
 dotenv.config();
 
 const dbConnect = () => {
