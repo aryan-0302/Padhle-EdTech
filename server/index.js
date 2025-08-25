@@ -47,7 +47,7 @@ app.use(cookieParser());
 // const allowedOrigins = ["http://localhost:5173"];
 >>>>>>> a9be2ea (Fix: Added CORS config for Vercel frontend)
 app.use(cors({
-  origin: "https://padhle-ed-tech-ho48.vercel.app", 
+  origin: "https://padhle-ed-tech.vercel.app/", 
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", 
   credentials: true 
 }));
