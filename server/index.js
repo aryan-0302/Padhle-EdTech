@@ -32,22 +32,11 @@ const PORT = process.env.PORT || 5000;
 dbConnect();
 
 app.use(express.json());
-<<<<<<< HEAD
-
 app.use(cookieParser());
 
 const allowedOrigins = ["http://localhost:5173"];
-=======
-app.use(cookieParser());
-
-// CORS is used to interact frontend and backend hosted at different port/domain.
-// When your frontend (React) makes an API request to the backend (Express) using Axios (or any other HTTP client),
-// this is considered a cross-origin request. The browser will block this request unless the backend explicitly allows it through CORS.
-
-// const allowedOrigins = ["http://localhost:5173"];
->>>>>>> a9be2ea (Fix: Added CORS config for Vercel frontend)
 app.use(cors({
-  origin: "https://padhle-ed-tech.vercel.app/", 
+  origin: "https://padhle-ed-tech.vercel.app", 
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", 
   credentials: true 
 }));
