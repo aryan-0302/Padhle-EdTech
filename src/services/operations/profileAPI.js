@@ -4,7 +4,7 @@ import { profileEndpoints } from "../apis.js";
 import { toast } from "react-hot-toast";
 import {settingsEndpoints} from "../apis.js"
 import { logout } from "./authAPI.js";
-
+import { setUser } from "../../slices/profileSlice.js";
 
 
 //getEnrolledCourses
@@ -38,7 +38,7 @@ export async function getUserCourses(token,dispatch){
 
 
 //updateProfilePicture
-export async function updatePfp(token,pfp){
+export async function updatePfp(token,pfp,dispatch){
   const toastId = toast.loading("Uploading...");
   try {
     const formData = new FormData();
@@ -53,7 +53,11 @@ export async function updatePfp(token,pfp){
     }
     toast.success("Profile Picture Updated Successfully");
     const imageUrl = response.data.data.image;
+    const prev = JSON.parse(localStorage.getItem("user") || "{}");
+    const nextUser = { ...prev, image: imageUrl };
+
     localStorage.setItem("user",JSON.stringify({...JSON.parse(localStorage.getItem("user")),image:imageUrl}));
+    dispatch(setUser(nextUser))
     console.log(JSON.parse(localStorage.getItem("user")).image);
   } catch (error) {
     console.log("UPDATE_DISPLAY_PICTURE_API API ERROR............", error)
@@ -67,7 +71,7 @@ export async function updatePfp(token,pfp){
 
 
 //updateAdditionalDetails
-export async function updateAdditionalDetails(token,additionalDetails){
+export async function updateAdditionalDetails(token,additionalDetails,dispatch){
   console.log("additionalDetails",additionalDetails);
   const {firstName,lastName,dob,gender,contactNumber,about}=additionalDetails;
   console.log("Request Payload:", { firstName, lastName, dob, gender, contactNumber, about });
@@ -89,7 +93,9 @@ export async function updateAdditionalDetails(token,additionalDetails){
     user.additionalDetails.contactNumber = contactNumber || user.additionalDetails.contactNumber;
     user.additionalDetails.about = about || user.additionalDetails.about;
     user.additionalDetails.gender=gender
-    localStorage.setItem("user",JSON.stringify(user));
+    const nextUser = { ...user };
+    localStorage.setItem("user",JSON.stringify(nextUser));
+    dispatch(setUser(nextUser))
 
   } catch (error) {
     console.log("UPDATE_ADDITIONAL_DETAILS_API API ERROR............", error)
