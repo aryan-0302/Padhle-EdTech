@@ -36,7 +36,7 @@ app.use(cookieParser());
 
 const allowedOrigins = ["http://localhost:5173"];
 app.use(cors({
-  origin: "https://padhle-ed-tech.vercel.app", 
+  origin: allowedOrigins, 
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE", 
   credentials: true 
 }));
@@ -122,8 +122,6 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-<<<<<<< HEAD
-=======
 
 
 
@@ -169,4 +167,3 @@ AI agent integration:STEPS:
 4.AI agent for smart recommendation:it analyzes user behaviour and adjusts recommendation dynamically.
 5.Showing recommendations on UI.
 */
->>>>>>> a9be2ea (Fix: Added CORS config for Vercel frontend)
