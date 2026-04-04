@@ -26,7 +26,7 @@ const Settings = () => {
   const handleUpload = (e) => {
     e.preventDefault();
     const file = e.target[0].files[0];
-    updatePfp(token,file);
+    updatePfp(token,file,dispatch);
   }
 
   const handleFileChange = (e) => {
@@ -68,7 +68,7 @@ const Settings = () => {
 
   const handelAdditionalDetails = (e) => {
     e.preventDefault()
-    updateAdditionalDetails(token,formData);
+    updateAdditionalDetails(token,formData,dispatch);
   }
 
 
