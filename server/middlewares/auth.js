@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
     console.log("Auth middleware triggered"); 
     try {
         
-        const token = req.cookies.token || req.body.token || req.header("Authorisation")?.replace("Bearer ", "");
+        const token = req.cookies.token || req.body.token || req.header("Authorization")?.replace("Bearer ", "");
         if (!token) {
             console.log("No token provided"); 
             return res.status(401).json({
