@@ -15,14 +15,6 @@ const updateProfile = async (req, res) => {
 
         // Get data
         const { dob, about, contactNumber, gender } = req.body;
-        
-        // Validation
-        if (!contactNumber || !dob || !about) {
-            return res.status(400).json({
-                success: false,
-                message: "Contact number, date of birth, and about are required.",
-            });
-        }
 
         // Find profile
         const userDetails = await User.findById(id);
