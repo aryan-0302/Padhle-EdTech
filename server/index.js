@@ -22,8 +22,6 @@ import doubtRoutes from "./routes/doubtRoutes.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "./config/swagger.js";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -125,7 +123,6 @@ app.post("/api/generate-content", async (req, res) => {
   }
 });
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/", (req, res) => {
   res.status(200).json({
