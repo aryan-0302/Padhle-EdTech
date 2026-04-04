@@ -14,11 +14,33 @@ const updateProfile = async (req, res) => {
         }
 
         // Get data
-        const { dob, about, contactNumber, gender } = req.body;
+        const { firstName,lastName,dob, about, contactNumber, gender } = req.body;
 
         // Find profile
         const userDetails = await User.findById(id);
+        if (!userDetails) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
         console.log("id;",id);
+
+        // Update User document (names) — only when provided
+        const userUpdates = {};
+        if (firstName !== undefined && firstName !== "") {
+            userUpdates.firstName = firstName.trim();
+        }
+        if (lastName !== undefined && lastName !== "") {
+            userUpdates.lastName = lastName.trim();
+        }
+        let updatedUser = userDetails;
+        if (Object.keys(userUpdates).length > 0) {
+            updatedUser = await User.findByIdAndUpdate(
+                id,
+                { $set: userUpdates },
+                { new: true }
+            ).populate("additionalDetails");
+        }
+
        
         
         const profileDetails = await Profile.findById(userDetails.additionalDetails);
@@ -41,6 +63,7 @@ const updateProfile = async (req, res) => {
             success: true,
             message: "Profile updated successfully",
             profileDetails,
+            user:updatedUser,
         });
     } catch (error) {
         console.error("Error updating profile:", error); // Log the error

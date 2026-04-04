@@ -77,7 +77,7 @@ export default function CoursesTable({ courses, setCourses }) {
           className="flex gap-x-10 border-b border-richblack-800 px-6 py-8 gap-4"
         >
           {/* Courses */}
-          <Td colSpan={1} className="flex flex-1 gap-x-4 p-3">
+          <Td colSpan={1} className="cursor-pointer flex flex-1 gap-x-4 p-3" onClick={()=>navigate(`/courses/${course._id}`)}>
             <img
               src={course?.thumbnail}
               className="md:h-[148px] md:w-[220px] aspect-video rounded-lg object-cover"

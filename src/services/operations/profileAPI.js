@@ -4,7 +4,7 @@ import { profileEndpoints } from "../apis.js";
 import { toast } from "react-hot-toast";
 import {settingsEndpoints} from "../apis.js"
 import { logout } from "./authAPI.js";
-
+import { setUser } from "../../slices/profileSlice.js";
 
 
 //getEnrolledCourses
@@ -92,6 +92,7 @@ export async function updateAdditionalDetails(token,additionalDetails,dispatch){
     user.additionalDetails.contactNumber = contactNumber || user.additionalDetails.contactNumber;
     user.additionalDetails.about = about || user.additionalDetails.about;
     user.additionalDetails.gender=gender
+    const nextUser = { ...user };
     localStorage.setItem("user",JSON.stringify(user));
     dispatch(setUser(nextUser))
   } catch (error) {
