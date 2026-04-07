@@ -143,38 +143,55 @@ export { createCourse };
 
 
 
-// 2. getAllcourses handler function
-const getAllCourses=async(req,res)=>{
-    try {
-		const allCourses = await Course.find(
-			{status: "Published"},
-			{
-				courseName: true,
-				price: true,
-				thumbnail: true,
-				instructor: true,
-				ratingAndReviews: true,
-				studentsEnrolled: true,
-			}
-		)
-			.sort({ createdAt: -1 })
-			.populate("instructor")
-			.lean()
-			.exec();
-		return res.status(200).json({
-			success: true,
-			data: allCourses,
-		});
+// 2. getAllcourses — published only, paginated (?page=1&limit=3)
+const getAllCourses = async (req, res) => {
+	try {
+	  const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+	  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 3));
+	  const skip = (page - 1) * limit;
+  
+	  const filter = { status: "Published" };
+  
+	  const [courses, total] = await Promise.all([
+		Course.find(filter, {
+		  courseName: true,
+		  price: true,
+		  thumbnail: true,
+		  instructor: true,
+		  ratingAndReviews: true,
+		  studentsEnrolled: true,
+		})
+		  .sort({ createdAt: -1 })
+		  .skip(skip)
+		  .limit(limit)
+		  .populate("instructor")
+		  .lean()
+		  .exec(),
+		Course.countDocuments(filter),
+	  ]);
+  
+	  const totalPages = total === 0 ? 0 : Math.ceil(total / limit);
+  
+	  return res.status(200).json({
+		success: true,
+		data: courses,
+		pagination: {
+		  page,
+		  limit,
+		  total,
+		  totalPages,
+		},
+	  });
 	} catch (error) {
-		console.log(error);
-		return res.status(404).json({
-			success: false,
-			message: `Can't Fetch Course Data`,
-			error: error.message,
-		});
+	  console.log(error);
+	  return res.status(500).json({
+		success: false,
+		message: `Can't Fetch Course Data`,
+		error: error.message,
+	  });
 	}
-}
-export {getAllCourses};
+  };
+  export { getAllCourses };
 
 
 

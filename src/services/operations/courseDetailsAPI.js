@@ -27,15 +27,21 @@ const {
   SEARCH_COURSES_API,
 } = courseEndpoints;
 
-export const getAllCourses = async () => {
+export const getAllCourses = async (page=1,limit=3) => {
   const toastId = toast.loading("Loading...");
-  let result = [];
+  let result = { data: [], pagination: null };
   try {
-    const response = await apiConnector("GET", GET_ALL_COURSE_API);
+    const response = await apiConnector("GET", GET_ALL_COURSE_API, null, null, {
+      page,
+      limit,
+    });
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories");
     }
-    result = response?.data?.data;
+    result = {
+      data: response.data.data ?? [],
+      pagination: response.data.pagination ?? null,
+    };
   } catch (error) {
     console.log("GET_ALL_COURSE_API API ERROR............", error);
     toast.error(error.message);
