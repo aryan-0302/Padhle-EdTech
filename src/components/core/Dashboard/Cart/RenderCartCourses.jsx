@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {GiNinjaStar} from "react-icons/gi"
 import {RiDeleteBin6Line} from "react-icons/ri"
-// import { removeFromCart } from '../../../../slices/cartSlice'
+import { removeFromCart } from '../../../../slices/cartSlice'
 import ReactStars from "react-rating-stars-component";
 import { Link } from 'react-router-dom';
 
@@ -47,9 +47,12 @@ const RenderCartCourses = () => {
 
                 <div className='flex flex-col items-end  space-y-2 crimson'>
                     <p className='mb-6 text-2xl md:text-3xl font-medium text-yellow-100'>₹ {course?.price} </p>
-                    <button className='flex items-center gap-x-1 rounded-md border border-richblack-600 bg-richblack-700 py-2 px-[8px] text-pink-200 text-lg font-medium'
-                    //onClick={() => dispatch(removeFromCart(course._id))}
-                    >
+                    <button
+                        type="button"
+                        className="flex items-center gap-x-1 rounded-md border border-richblack-600 bg-richblack-700 px-[8px] py-2 text-lg font-medium text-pink-200 transition hover:bg-richblack-600"
+                        onClick={() => dispatch(removeFromCart(course._id))}
+                        aria-label={`Remove ${course?.courseName ?? 'course'} from cart`}
+                        >
                         <RiDeleteBin6Line/>
                         <span></span>
                     </button>
