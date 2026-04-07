@@ -52,20 +52,14 @@ function App() {
 
 
        <Route
+          path="/dashboard/enrolled-courses/view-course/:courseId/section/:sectionId/sub-section/:subsectionId"
           element={
             <PrivateRoute>
               <ViewCourse />
             </PrivateRoute>
           }
         >
-          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
-            <>
-              <Route
-                path="dashboard/enrolled-courses/view-course/:courseId/section/:sectionId/sub-section/:subsectionId"
-                element={<VideoDetails />}
-              />
-            </>
-          )}
+          <Route index element={<VideoDetails />} />
         </Route>
 
 

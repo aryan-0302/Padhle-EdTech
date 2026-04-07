@@ -4,6 +4,7 @@ import {getUserCourses as getUserEnrolledCourses}  from '../../../services/opera
 import ProgressBar from '@ramonak/react-progress-bar';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { matchId } from '../../../utils/matchId';
 
 const EnrolledCourses = () => {
     const dispatch=useDispatch();
@@ -21,8 +22,8 @@ const EnrolledCourses = () => {
             const response = await getUserEnrolledCourses(token,dispatch);
             console.log("getEnrolledCourses -> response", response?.courseProgress);
             setLoading(false);
-            setEnrolledCourses(response?.courses);
-            setProgressData(response?.courseProgress);
+            setEnrolledCourses(response?.courses ?? []);
+            setProgressData(response?.courseProgress ?? []);
 
     }
 
@@ -67,7 +68,17 @@ const EnrolledCourses = () => {
                     {
                         enrolledCourses.map((course,index)=> (
                             <div key={index} onClick={()=>{
-                                navigate(`view-course/${course._id}/section/${course.courseContent[0]._id}/sub-section/${course.courseContent[0].subSection[0]}`)}}
+                                const firstSection = course.courseContent?.[0]
+                                const firstSub = firstSection?.subSection?.[0]
+                                if (!firstSection || firstSub == null) return
+                                const subsectionId =
+                                  typeof firstSub === 'object' && firstSub?._id != null
+                                    ? firstSub._id
+                                    : firstSub
+                                navigate(
+                                  `/dashboard/enrolled-courses/view-course/${course._id}/section/${firstSection._id}/sub-section/${subsectionId}`
+                                )
+                              }}
                                  className='flex items-center border border-richblack-700 rounded-none'>
                                 <div className='flex w-[45%] cursor-pointer items-center gap-4 px-5 py-3'>
                                     <img className='h-14 w-14 rounded-lg object-cover'  src={course.thumbnail}/>
@@ -75,7 +86,7 @@ const EnrolledCourses = () => {
                                         <p className='font-semibold'>{course.courseName}</p>
                                         <p className='text-xs text-richblack-300 hidden md:block'>{
                                             //description with max 50 characters
-                                            course.courseDescription.length > 50 ? course.courseDescription.slice(0,50) + '....' : course.courseDescription
+                                            (course.courseDescription?.length ?? 0) > 50 ? course.courseDescription.slice(0,50) + '....' : (course.courseDescription ?? '')
                                         }</p>
                                     </div>
                                 </div>
@@ -87,13 +98,15 @@ const EnrolledCourses = () => {
                                 <div className='flex w-1/5 flex-col gap-2 px- py-3'>
                                     {
                                         progressData?.map((progress,index)=> {
-                                            //show 0 progress if no progress data is available
-                                            if(progress?.courseID === course?._id) {
+                                            const totalLectures = totalNoOfLectures(course)
+                                            if(matchId(progress?.courseID, course?._id)) {
+                                                const completed = progress?.completedVideos?.length ?? 0
+                                                const pct = totalLectures > 0 ? (completed / totalLectures) * 100 : 0
                                                 return (
                                                     <div key={index}>
-                                                        <p>Completed: {progress?.completedVideos?.length} / {totalNoOfLectures(course)}</p>
+                                                        <p>Completed: {completed} / {totalLectures || 0}</p>
                                                         <ProgressBar
-                                                            completed={progress?.completedVideos?.length/totalNoOfLectures(course)*100}
+                                                            completed={pct}
                                                             total={progress?.total}
                                                             height='8px'
                                                             isLabelVisible={false}

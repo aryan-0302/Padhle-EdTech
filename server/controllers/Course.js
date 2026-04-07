@@ -565,55 +565,61 @@ const deleteCourse = async (req, res) => {
 	}		
 }					
 
-//mark lecture as completed
+// mark lecture as completed
 const markLectureAsComplete = async (req, res) => {
 	const { courseId, subSectionId, userId } = req.body
 	if (!courseId || !subSectionId || !userId) {
-	  return res.status(400).json({
-		success: false,
-		message: "Missing required fields",
-	  })
-	}
-	try {
-	progressAlreadyExists = await CourseProgress.findOne({
-				  userID: userId,
-				  courseID: courseId,
-				})
-	  const completedVideos = progressAlreadyExists.completedVideos
-	  if (!completedVideos.includes(subSectionId)) {
-		await CourseProgress.findOneAndUpdate(
-		  {
-			userID: userId,
-			courseID: courseId,
-		  },
-		  {
-			$push: { completedVideos: subSectionId },
-		  }
-		)
-	  }else{
 		return res.status(400).json({
 			success: false,
-			message: "Lecture already marked as complete",
-		  })
-	  }
-	  await CourseProgress.findOneAndUpdate(
-		{
-		  userId: userId,
-		  courseID: courseId,
-		},
-		{
-		  completedVideos: completedVideos,
+			message: "Missing required fields",
+		})
+	}
+
+	try {
+		const progress = await CourseProgress.findOne({
+			userID: userId,
+			courseID: courseId,
+		})
+
+		if (!progress) {
+			const created = await CourseProgress.create({
+				userID: userId,
+				courseID: courseId,
+				completedVideos: [subSectionId],
+			})
+			await User.findByIdAndUpdate(userId, {
+				$addToSet: { courseProgress: created._id },
+			})
+			return res.status(200).json({
+				success: true,
+				message: "Lecture marked as complete",
+			})
 		}
-	  )
-	return res.status(200).json({
-	  success: true,
-	  message: "Lecture marked as complete",
-	})
+
+		const ids = progress.completedVideos || []
+		const alreadyDone = ids.some((id) => String(id) === String(subSectionId))
+		if (alreadyDone) {
+			return res.status(400).json({
+				success: false,
+				message: "Lecture already marked as complete",
+			})
+		}
+
+		await CourseProgress.findOneAndUpdate(
+			{ _id: progress._id },
+			{ $push: { completedVideos: subSectionId } }
+		)
+
+		return res.status(200).json({
+			success: true,
+			message: "Lecture marked as complete",
+		})
 	} catch (error) {
-	  return res.status(500).json({
-		success: false,
-		message: error.message,
-	  })
+		console.error("markLectureAsComplete", error)
+		return res.status(500).json({
+			success: false,
+			message: error.message,
+		})
 	}
 }
 
