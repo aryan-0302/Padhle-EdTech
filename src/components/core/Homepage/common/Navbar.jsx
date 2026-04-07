@@ -136,12 +136,20 @@ function Navbar() {
         <div className='flex gap-x-4 items-center'>
             {
                 user && user?.accountType!="Instructor" &&(
-                  <Link to="/dashboard/cart" className='relative'>
-                  <div className='bg-black rounded-full p-2'>
-                      <FaShoppingCart className='text-white' />
-                  </div>
-                  {totalItems > 0 && <span>{totalItems}</span>}
-              </Link>              
+                  <Link
+                    to="/dashboard/cart"
+                    className="relative inline-flex items-center justify-center"
+                    aria-label={totalItems > 0 ? `Cart, ${totalItems} items` : "Cart"}
+                  >
+                    <div className="rounded-full bg-black p-2">
+                      <FaShoppingCart className="text-white" />
+                    </div>
+                    {totalItems > 0 && (
+                      <span className="absolute -right-1 -top-1 flex min-h-[1.125rem] min-w-[1.125rem] items-center justify-center rounded-full bg-yellow-50 px-1 text-[10px] font-bold leading-none text-richblack-900">
+                        {totalItems > 99 ? "99+" : totalItems}
+                      </span>
+                    )}
+                  </Link>              
                 )
             }
 
