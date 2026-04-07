@@ -18,7 +18,7 @@ export async function getUserCourses(token,dispatch){
         profileEndpoints.GET_USER_ENROLLED_COURSES_API,
         null,
         {
-          Authorisation: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       )
   
@@ -45,7 +45,7 @@ export async function updatePfp(token,pfp,dispatch){
     console.log("pfp",pfp)
     formData.append('pfp',pfp);
     const response = await apiConnector("PUT", settingsEndpoints.UPDATE_DISPLAY_PICTURE_API,formData,{
-      Authorisation: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     });
     console.log("UPDATE_DISPLAY_PICTURE_API API RESPONSE............", response)
     if (!response.data.success) {
@@ -78,7 +78,7 @@ export async function updateAdditionalDetails(token,additionalDetails,dispatch){
   try {
     console.log("additonal try mai aaya:")
     const response = await apiConnector("PUT", settingsEndpoints.UPDATE_PROFILE_API,{firstName,lastName,dob,gender,contactNumber,about},{
-      Authorisation: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     });
     console.log("UPDATE_ADDITIONAL_DETAILS_API API RESPONSE............", response)
     if (!response.data.success) {
@@ -114,7 +114,7 @@ export async function updatePassword(token,password){
   const toastId = toast.loading("Updating...");
   try {
    const response = await apiConnector("POST", settingsEndpoints.CHANGE_PASSWORD_API,{oldPassword, newPassword, confirmPassword},{
-      Authorisation: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     });
     console.log("UPDATE_PASSWORD_API API RESPONSE............", response)
     if (!response.data.success) {
@@ -136,7 +136,7 @@ export async function deleteAccount(token,dispatch,navigate){
   const toastId = toast.loading("Deleting...");
   try {
     const response = await apiConnector("DELETE", settingsEndpoints.DELETE_PROFILE_API,null,{
-      Authorisation: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     });
     console.log("DELETE_ACCOUNT_API API RESPONSE............", response)
     if (!response.data.success) {
@@ -174,7 +174,7 @@ export async function getInstructorDashboard(token, dispatch) {
       profileEndpoints.GET_ALL_INSTRUCTOR_DASHBOARD_DETAILS_API,
       null,
       {
-        Authorisation: `Bearer ${token}`,  
+        Authorization: `Bearer ${token}`,  
       }
     );
     
