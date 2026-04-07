@@ -8,7 +8,7 @@ import Section from "../models/Section.js"
 import SubSection from "../models/SubSection.js"
 import convertSecondsToDuration from "../utils/secToDuration.js";
 import CourseProgress from "../models/CourseProgress.js"
-import { storeProductInChroma } from "./Recommendations.js"
+// import { storeProductInChroma } from "./Recommendations.js"
 
 // 1. createcourse
 const createCourse = async (req, res) => {
@@ -117,7 +117,7 @@ const createCourse = async (req, res) => {
             { new: true }
         );
 
-		await storeProductInChroma(newCourse);
+		// await storeProductInChroma(newCourse);
 
         return res.status(200).json({
             success: true,
@@ -147,17 +147,19 @@ export { createCourse };
 const getAllCourses=async(req,res)=>{
     try {
 		const allCourses = await Course.find(
-			{},
+			{status: "Published"},
 			{
 				courseName: true,
 				price: true,
 				thumbnail: true,
 				instructor: true,
 				ratingAndReviews: true,
-				studentsEnroled: true,
+				studentsEnrolled: true,
 			}
 		)
+			.sort({ createdAt: -1 })
 			.populate("instructor")
+			.lean()
 			.exec();
 		return res.status(200).json({
 			success: true,
