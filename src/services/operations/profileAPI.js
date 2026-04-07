@@ -10,8 +10,8 @@ import { setUser } from "../../slices/profileSlice.js";
 //getEnrolledCourses
 export async function getUserCourses(token,dispatch){
     // const toastId = toast.loading("Loading...");
-    dispatch(setProgress);
-    let result = []
+    dispatch(setProgress(0));
+    let result = null
     try {
       const response = await apiConnector(
         "GET",
@@ -29,6 +29,7 @@ export async function getUserCourses(token,dispatch){
     } catch (error) {
       console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error)
       toast.error("Could Not Get Enrolled Courses")
+      result = { courses: [], courseProgress: [] }
     }
     dispatch(setProgress(100));
     // toast.dismiss(toastId)

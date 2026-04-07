@@ -417,8 +417,7 @@ export const getFullDetailsOfCourse = async (courseId, token) => {
     result = response?.data?.data;
   } catch (error) {
     console.log("COURSE_FULL_DETAILS_API API ERROR............", error);
-    result = error.response.data;
-    // toast.error(error.response.data.message);
+    result = error?.response?.data ?? null;
   }
   toast.dismiss(toastId);
   //   dispatch(setLoading(false));
@@ -443,14 +442,16 @@ export const markLectureAsComplete = async (data, token) => {
       response
     );
 
-    if (!response.data.message) {
-      throw new Error(response.data.error);
+    if (!response?.data?.success) {
+      throw new Error(response?.data?.message || "Could not mark lecture complete");
     }
-    toast.success("Lecture Completed");
+    toast.success(response?.data?.message || "Lecture completed");
     result = true;
   } catch (error) {
     console.log("MARK_LECTURE_AS_COMPLETE_API API ERROR............", error);
-    toast.error(error.message);
+    const msg =
+      error?.response?.data?.message || error?.message || "Could not mark lecture complete";
+    toast.error(msg);
     result = false;
   }
   toast.dismiss(toastId);

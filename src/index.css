@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: #000814;
+}
+
 @layer components {
     /* Buy Now / Go to Course */
     .yellowButton {
