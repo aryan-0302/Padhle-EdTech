@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* Buy Now / Go to Course */
+    .yellowButton {
+      @apply w-full rounded-lg bg-yellow-50 px-4 py-3 text-center text-base font-semibold text-richblack-900 shadow-[0_2px_8px_rgba(0,0,0,0.25)] transition duration-200 hover:bg-yellow-25 hover:shadow-[0_4px_12px_rgba(255,214,10,0.35)] focus:outline-none focus:ring-2 focus:ring-yellow-50 focus:ring-offset-2 focus:ring-offset-richblack-800 active:scale-[0.98];
+    }
+  
+    /* Go to Cart / Add to Cart */
+    .blackButton {
+      @apply w-full rounded-lg border border-richblack-500 bg-richblack-800 px-4 py-3 text-center text-base font-semibold text-richblack-5 transition duration-200 hover:border-richblack-400 hover:bg-richblack-700 focus:outline-none focus:ring-2 focus:ring-richblack-400 focus:ring-offset-2 focus:ring-offset-richblack-800 active:scale-[0.98];
+    }
+  }
