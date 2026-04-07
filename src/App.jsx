@@ -28,6 +28,8 @@ import SearchCourse from './pages/SearchCourse.jsx'
 import ViewCourse from './pages/ViewCourse'
 import VideoDetails from './components/core/ViewCourse/VideoDetails.jsx'
 import AdminPanel from "./components/core/Dashboard/AdminPanel.jsx"
+import AllCourses from './components/core/Dashboard/AllCourses.jsx'
+
 
 function App() {
   const user=useSelector((state)=>state.profile.user);
@@ -106,6 +108,7 @@ function App() {
         {user?.accountType === ACCOUNT_TYPE.STUDENT && (
             <>
               <Route path="dashboard/cart" element={<Cart />} />
+              <Route path="dashboard/all-courses" element={<AllCourses></AllCourses>}></Route>
               <Route path="dashboard/enrolled-courses" element={<EnrolledCourses></EnrolledCourses>}></Route>
             </>
         )}
