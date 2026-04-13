@@ -8,6 +8,7 @@ import Section from "../models/Section.js"
 import SubSection from "../models/SubSection.js"
 import convertSecondsToDuration from "../utils/secToDuration.js";
 import CourseProgress from "../models/CourseProgress.js"
+import { notifyAllStudentsNewCoursePublished } from "../utils/notificationHelper.js";
 // import { storeProductInChroma } from "./Recommendations.js"
 
 // 1. createcourse
@@ -117,7 +118,14 @@ const createCourse = async (req, res) => {
             { new: true }
         );
 
-		// await storeProductInChroma(newCourse);
+		if (newCourse.status === "Published") {
+			const instructorName = `${instructorDetails.firstName} ${instructorDetails.lastName}`;
+			try {
+			  await notifyAllStudentsNewCoursePublished(newCourse, instructorName);
+			} catch (e) {
+			  console.error("notifyAllStudentsNewCoursePublished:", e);
+			}
+		  }
 
         return res.status(200).json({
             success: true,
@@ -277,13 +285,15 @@ export {getInstructorCourses};
 
 
 
-// PENDING:SEARCHCOURSEMARKLECTUREASCOMPLETE
+
 //Edit Course Details
 const editCourse = async (req, res) => {
 	try {
 		const { courseId } = req.body
 		const updates = req.body
 		const course = await Course.findById(courseId)
+
+		const previousStatus = course.status;
 	
 		if (!course) {
 		  return res.status(404).json({ error: "Course not found" })
@@ -312,6 +322,21 @@ const editCourse = async (req, res) => {
 		}
 	
 		await course.save()
+
+		if (course.status === "Published" && previousStatus !== "Published") {
+			try {
+			  const populated = await Course.findById(courseId)
+				.populate("instructor", "firstName lastName")
+				.exec();
+			  const ins = populated?.instructor;
+			  const instructorName = ins
+				? `${ins.firstName} ${ins.lastName}`
+				: "An instructor";
+			  await notifyAllStudentsNewCoursePublished(populated, instructorName);
+			} catch (e) {
+			  console.error("notifyAllStudentsNewCoursePublished (edit):", e);
+			}
+		  }
 	
 		const updatedCourse = await Course.findOne({
 		  _id: courseId,
@@ -346,54 +371,6 @@ const editCourse = async (req, res) => {
 		})
 	  }
 }
-
-
-// const editCourse=async(req,res)=>{
-// 	try{const courId=req.body;
-// 	const updates=req.body;
-
-// 	const courseofid=await Course.findById(courId);
-
-// 	if(!courseofid){
-// 		console.log("course not found.");
-// 	}
-
-// 	if (req.files) {
-// 		console.log("thumbnail update")
-// 		const thumbnail = req.files.thumbnailImage
-// 		const thumbnailImage = await uploadImageToCloudinary(
-// 		  thumbnail,
-// 		  process.env.FOLDER_NAME
-// 		)
-// 		course.thumbnail = thumbnailImage.secure_url
-// 	  }
-	
-//       const updatedCoursei = await Course.findByIdAndUpdate(courId, updates, {
-// 		new: true,
-// 	  });
-
-
-// 	  if (!updatedCoursei) {
-// 		return res.status(404).json({ success: false, message: "Course not found" });
-// 	  }
-
-// 	  return res.status(200).json({
-// 		success: true,
-// 		data: updatedCoursei,
-// 	 });}
-
-// 	 catch(error){
-// 		console.log(error);
-// 		res.status(500).json({
-// 			success: false,
-// 			message: "Failed to fetch courses",
-// 			error: error.message,
-// 		});
-// 	 }
-
-// }
-
-
 
 
   //get full course details

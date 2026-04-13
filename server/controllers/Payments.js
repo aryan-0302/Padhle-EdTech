@@ -7,7 +7,10 @@ import paymentSuccess from "../mail/templates/paymentSuccess.js"
 import mongoose from "mongoose"
 import crypto from "crypto"
 import CourseProgress from "../models/CourseProgress.js"
-
+import {
+    notifyEnrollmentSuccess,
+    notifyInstructorNewEnrollment,
+  } from "../utils/notificationHelper.js";
 
 const capturePayment = async (req, res) => {
 
@@ -160,6 +163,21 @@ const verifySignature = async (req, res) => {
                             `You have successfully enrolled for ${courseName}`,
                             emailTemplate,
                         );
+                        try {
+                            await notifyEnrollmentSuccess({
+                              studentId: userId,
+                              courseId: course._id,
+                              courseName: course.courseName,
+                            });
+                            await notifyInstructorNewEnrollment({
+                              instructorId: course.instructor,
+                              courseId: course._id,
+                              courseName: course.courseName,
+                              studentName: `${recipient.firstName} ${recipient.lastName}`,
+                            });
+                          } catch (notifyErr) {
+                            console.error("notificationHelper enrollment:", notifyErr);
+                          }
                         }
                         return res.status(200).json({
                             success:true,

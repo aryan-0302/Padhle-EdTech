@@ -14,6 +14,7 @@ import { setProgress } from '../../../../slices/loadingBarSlice.js'
 import { useRef } from 'react'
 import { HiSearch } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
+import NotificationBell from "./NotificationBell.jsx";
 
 function Navbar() {
   const dispatch=useDispatch();
@@ -174,7 +175,7 @@ function Navbar() {
             }
 
             {
-                token!=null && <ProfileDropDown></ProfileDropDown>
+                token!=null && <><NotificationBell/> <ProfileDropDown></ProfileDropDown></>
             }
         </div>
 

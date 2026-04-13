@@ -18,6 +18,7 @@ import cloudinaryconnect from "./config/Cloudinary.js";
 import generatequiz from "./routes/GenerateQuiz.js";
 import smartNotes from "./routes/SmartNotes.js";
 import doubtRoutes from "./routes/doubtRoutes.js";
+import notificationRoutes from "./routes/Notification.js";
 
 import dotenv from "dotenv";
 dotenv.config();
@@ -76,6 +77,7 @@ app.use("/api/v1/recommend", recommendRoutes);
 app.use("/api/v1/generatequiz", generatequiz);
 app.use("/api/v1/notes", smartNotes);
 app.use("/api/v1/doubt", doubtRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 
 const chat = model.startChat({
   history: [

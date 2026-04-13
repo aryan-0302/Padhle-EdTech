@@ -6,6 +6,7 @@ import { setUser } from "../../slices/profileSlice"
 import { endpoints } from "../apis.js/"
 import {apiConnector} from "../apniconnect.js"
 import {setProgress} from "../../slices/loadingBarSlice.js"
+import { clearNotifications } from "../../slices/notificationSlice.js";
 
 const {
   SENDOTP_API,
@@ -181,6 +182,7 @@ export function getPasswordResetToken(email, setEmailSent) {
     }
     toast.dismiss(toastId)
     dispatch(setLoading(false))
+    dispatch(clearNotifications());
   }
 }
 

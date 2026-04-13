@@ -1,13 +1,14 @@
 import RatingAndReview from "../models/RatingAndReview.js"
 import Course from "../models/Course.js"
 import mongoose from "mongoose";
-
+import User from "../models/User.js";
+import { notifyInstructorNewReview } from "../utils/notificationHelper.js";
 
 // create Rating
 const createRating=async(req,res)=>{
     try{
         // get userid: auth wale middleware mai req ke saath payload ko link kiya tha, isliye req.user.id
-        const {userId}=req.user.id;
+        const userId=req.user.id;
 
         // fetch data from req body
         const {rating,review,courseId}=req.body;
@@ -52,6 +53,24 @@ const createRating=async(req,res)=>{
             },{new:true})
             console.log(updatedCoursesDetails);
 
+        try {
+            const courseForNotify = await Course.findById(courseId)
+                .select("courseName instructor")
+                .lean();
+            const reviewer = await User.findById(userId).select("firstName lastName").lean();
+            if (courseForNotify?.instructor && reviewer) {
+                const studentName = `${reviewer.firstName} ${reviewer.lastName}`;
+                await notifyInstructorNewReview({
+                    instructorId: courseForNotify.instructor,
+                    courseId,
+                    courseName: courseForNotify.courseName || "your course",
+                    studentName,
+                    rating,
+                });
+            }
+        } catch (notifyErr) {
+            console.error("notifyInstructorNewReview:", notifyErr);
+        }
 
         // return response
         return res.status(200).json({

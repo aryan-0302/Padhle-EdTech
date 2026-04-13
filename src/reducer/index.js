@@ -5,6 +5,7 @@ import cartReducer from "../slices/cartSlice.js"
 import loadingBarReducer from "../slices/loadingBarSlice.js"
 import courseReducer from "../slices/courseSlice.js"
 import viewCourseReducer from "../slices/viewCourseSlice.js"
+import notificationReducer from "../slices/notificationSlice.js"
 
 const rootReducer=combineReducers({
     auth:authReducer,
@@ -13,5 +14,6 @@ const rootReducer=combineReducers({
     loadingBar: loadingBarReducer,
     course:courseReducer,
     viewCourse: viewCourseReducer,
+    notifications: notificationReducer,
 })
 export default rootReducer;
