@@ -2,6 +2,7 @@ import Section from "../models/Section.js"
 import Course from "../models/Course.js"
 import subSection from "../models/SubSection.js"
 import mongoose from 'mongoose';
+import { notifyEnrolledStudentsContentUpdate } from "../utils/notificationHelper.js";
 
 const createSection = async (req, res) => {
     try {
@@ -57,6 +58,18 @@ const createSection = async (req, res) => {
             })
             .exec();
 
+        
+            try {
+                await notifyEnrolledStudentsContentUpdate({
+                    courseId,
+                    title: "Course updated",
+                    body: `A new section was added to "${ifcourse.courseName}".`,
+                    metadata: { kind: "SECTION_ADDED" },
+                });
+            } catch (e) {
+            console.error("notifyEnrolledStudentsContentUpdate:", e);
+            }
+
         // Return the updated course object in the response
         return res.status(200).json({
             success: true,
@@ -92,6 +105,25 @@ const updateSection=async(req,res)=>{
         }
         // update data
         const updatedSection=await Section.findByIdAndUpdate(sectonId,{sectionName},{new:true});
+
+        let resolvedCourseId = courseId;
+        if (!resolvedCourseId) {
+        const parentCourse = await Course.findOne({ courseContent: sectonId }).select("_id courseName").lean();
+        resolvedCourseId = parentCourse?._id;
+        }
+        if (resolvedCourseId) {
+        try {
+            const c = await Course.findById(resolvedCourseId).select("courseName").lean();
+            await notifyEnrolledStudentsContentUpdate({
+            courseId: resolvedCourseId,
+            title: "Course updated",
+            body: `A section was updated in "${c?.courseName || "your course"}".`,
+            metadata: { kind: "SECTION_UPDATED" },
+            });
+        } catch (e) {
+            console.error("notifyEnrolledStudentsContentUpdate:", e);
+        }
+        }
 
         // return res
         return res.status(200).json({

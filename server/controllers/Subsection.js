@@ -5,7 +5,7 @@ import Course from "../models/Course.js";
 import axios from "axios";
 import fs from "fs"
 import ffmpeg from "fluent-ffmpeg"
-
+import { notifyEnrolledStudentsContentUpdate } from "../utils/notificationHelper.js";
 
 const createSubSection = async (req, res) => {
     try {
@@ -132,6 +132,18 @@ const createSubSection = async (req, res) => {
             .populate({ path: "courseContent", populate: { path: "subSection" } })
             .exec();
 
+        try {
+            const c = await Course.findById(courseId).select("courseName").lean();
+            await notifyEnrolledStudentsContentUpdate({
+                courseId,
+                title: "New content available",
+                body: `A new lecture was added to "${c?.courseName || "your course"}".`,
+                metadata: { kind: "LECTURE_ADDED" },
+            });
+            } catch (e) {
+            console.error("notifyEnrolledStudentsContentUpdate:", e);
+            }
+
         return res.status(200).json({ success: true, data: updatedCourse });
 
     } catch (error) {
@@ -180,6 +192,18 @@ const updateSubSection = async (req,res) => {
 
 		
 		const updatedCourse = await Course.findById(courseId).populate({ path: "courseContent", populate: { path: "subSection" } }).exec();
+
+        try {
+            const c = await Course.findById(courseId).select("courseName").lean();
+            await notifyEnrolledStudentsContentUpdate({
+                courseId,
+                title: "Course updated",
+                body: `A lecture was updated in "${c?.courseName || "your course"}".`,
+                metadata: { kind: "LECTURE_UPDATED" },
+            });
+            } catch (e) {
+            console.error("notifyEnrolledStudentsContentUpdate:", e);
+            }
 		// Return the updated section in the response
 		return res.status(200).json({ success: true, data: updatedCourse });
 	} catch (error) {

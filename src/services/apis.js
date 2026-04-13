@@ -80,4 +80,12 @@ const recommendEndpoint={
   RECOMMENDED_COURSES:BASE_URL+"/recommend"
 }
 
-export { categories, endpoints,contactusEndpoint,courseEndpoints,profileEndpoints,settingsEndpoints,catalogData,ratingsEndpoints,studentEndpoints,activityEndpoints,recommendEndpoint};
+const notificationEndpoints = {
+  NOTIFICATIONS_API: BASE_URL + "/notifications",
+  NOTIFICATIONS_UNREAD_API: BASE_URL + "/notifications/unread-count",
+  NOTIFICATION_READ_API: (id) => BASE_URL + `/notifications/${id}/read`,
+  NOTIFICATIONS_READ_ALL_API: BASE_URL + "/notifications/read-all",
+  NOTIFICATION_CART_REMINDER_API: BASE_URL + "/notifications/cart-reminder",
+};
+
+export { categories, endpoints,contactusEndpoint,courseEndpoints,profileEndpoints,settingsEndpoints,catalogData,ratingsEndpoints,studentEndpoints,activityEndpoints,recommendEndpoint,notificationEndpoints};
