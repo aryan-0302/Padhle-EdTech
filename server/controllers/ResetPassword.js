@@ -33,7 +33,7 @@ const resetPasswordToken=async(req,res)=>{
     const url=`https://localhost:3000/update-password/${token}`
 
     // send mail containing the url
-    await mailSender(email,`Password Reset Link","Password Reset Link:${url}`);
+    await mailSender(email, "Reset your Padhle password", "Password Reset Link:"+url);
 
     // return response
     return res.json({
